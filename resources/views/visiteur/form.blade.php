@@ -28,6 +28,17 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.3s">
+                @if (session('reject'))
+                    <div class="alert alert-danger">
+                        {{ session('reject') }}
+                    </div>
+                @endif
+        
+                @if (session('userNotFound'))
+                    <div class="alert alert-danger">
+                        {{ session('userNotFound') }}
+                    </div>
+                @endif
                 <form method="POST" action="{{route('saveRdv')}}">
                     @csrf
                     <div class="row g-3">
@@ -87,6 +98,7 @@
                             'id' => 'hour',
                             'for' => 'hour',
                             'class' => 'col-md-6',
+                            'others' => 'min=08:00 max=17:00'
                         ])
 
                         @include('shared.select', [
