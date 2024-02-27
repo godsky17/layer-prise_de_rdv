@@ -15,4 +15,12 @@ class Rendezvous extends Model
         'duration',
         'user_id',
     ];
+
+    public function User(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function Etat(){
+        return $this->belongsTo(Etat::class);
+    }
 }

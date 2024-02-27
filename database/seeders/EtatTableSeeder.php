@@ -29,5 +29,9 @@ class EtatTableSeeder extends Seeder
         Etat::create([
             'name' => 'Passer',
         ]);
+
+        Etat::create([
+            'name' => 'Annuller',
+        ]);
     }
 }

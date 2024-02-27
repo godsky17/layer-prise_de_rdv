@@ -6,8 +6,11 @@ use App\Http\Requests\RendezvousRequest;
 use App\Models\Rendezvous;
 use Carbon\Carbon;
 use App\Models\User;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class RendezvousController extends Controller
@@ -15,7 +18,9 @@ class RendezvousController extends Controller
     //
 
     public function store(RendezvousRequest $request){
-        if($this->checkDiponibility($request)){
+        $is_valid = $this->checkDiponibility($request);
+        if($is_valid)
+        {
             $user = DB::table('users')->insertGetId([
                 'last_name' => $request->validated('last_name'),
                 'first_name' => $request->validated('first_name'),
@@ -26,7 +31,8 @@ class RendezvousController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
         
-            if ($user) {
+            if ($user) 
+            {
                 $user = DB::table('rendezvouses')->insert([
                     'date' => $request->validated('day'),
                     'hour' => $request->validated('hour'),
@@ -36,7 +42,9 @@ class RendezvousController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
-            }else{
+                return redirect()->route('index');
+            }else
+            {
                 return redirect()->route('getrdv')->with('userNotFound', 'Une erreur sest produite veuiller recommencer en remplissant convenablement le formulaire.');
             }
         }
@@ -47,6 +55,7 @@ class RendezvousController extends Controller
     protected function checkDiponibility($request){
         $periodOfRdv = [];
         $rdvOfDate = Rendezvous::where('date', '=', $request->validated('day'))->get();
+        
         if ($rdvOfDate) {
             foreach ($rdvOfDate as $value) {
                 $array = [
@@ -68,36 +77,35 @@ class RendezvousController extends Controller
         $hours = [];
 
         foreach ($informations as $information) {
-            $beginRdv = new Carbon($information['hour'], +1);
-            $endRdv = $beginRdv->add($information['duration'], 'hour');
+            $beginRdv = new DateTime($information['hour']);
+            $endRdv = $beginRdv->modify('+'.$information['duration'].'hour')->format('H:i:s');
             array_push($hours, [
                 'beginRdv' => $information['hour'],
-                'endRdv' => $endRdv->hour.':'.'0'.$endRdv->minute.':'.'0'.$endRdv->second,
+                'endRdv' => $endRdv
             ]);
         }
-
         return $hours;
     }
 
-    protected function comparHours($hours, $hour, $duration){
-        $nowRdvHour = new Carbon($hour, +1);
-        $nowRdvEndCarbon = $nowRdvHour->add($duration, 'hour');
-
-        $nowRdvbegin = $hour;
-        $nowRdvEnd = $nowRdvEndCarbon->hour.':'.$nowRdvEndCarbon->minute;
+    protected function comparHours($pastHours, $newHours,  $duration){
+        $startInt = new DateTime($newHours);
         
-        
-        foreach ($hours as $value) {
-            /*===== les conditions ====*/
-            $condition1 = ($value['beginRdv'] <= $nowRdvbegin) && ($value['endRdv'] >= $nowRdvEnd);
-            $condition2 = ($nowRdvbegin <= $value['beginRdv']) && ($value['endRdv'] >= $nowRdvEnd);
-            $condition3 = ($value['beginRdv'] <= $nowRdvbegin) && ($nowRdvEnd >= $value['endRdv']);
-            $condition4 = ($nowRdvbegin <= $value['beginRdv']) && ($nowRdvEnd >= $value['endRdv']);
+        $start = new DateTime($newHours);
+        $end = $startInt->modify('+'.$duration.' hour')->format('H:i:s');
+        $end = new DateTime($end);
 
-            if ($condition1 || $condition2 || $condition3 || $condition4 ) {
-                return false;
+        $count = 0;
+
+        foreach ($pastHours as $value) {
+            $dbBegin = new DateTime($value['beginRdv']);
+            $dbEnd = new DateTime($value['endRdv']);
+
+            if (!($end < $dbBegin || $dbEnd < $start)) {
+                return false; // Les périodes se chevauchent
             }
         }
+
         return true;
-    }
+
+    }   
 }

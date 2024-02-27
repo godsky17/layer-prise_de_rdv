@@ -12,4 +12,8 @@ class Etat extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function Rdv() {
+        return $this->belongsTo(Rendezvous::class);
+    }
 }
