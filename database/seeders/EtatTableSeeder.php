@@ -31,7 +31,7 @@ class EtatTableSeeder extends Seeder
         ]);
 
         Etat::create([
-            'name' => 'Annuller',
+            'name' => 'Annuler',
         ]);
     }
 }

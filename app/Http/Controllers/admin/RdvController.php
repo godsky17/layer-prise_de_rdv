@@ -22,7 +22,7 @@ class RdvController extends Controller
     {
         //
         return view('admin.rdv',[
-            'rdv' => Rendezvous::where('date', '>=', date('Y-m-d'))->orderBy('date', 'asc')->orderBy('hour', 'asc')->get(),
+            'rdv' => Rendezvous::where('date', '>=', date('Y-m-d'))->where('etat_id', '!=', 5)->orderBy('date', 'asc')->orderBy('hour', 'asc')->get(),
         ]);
     }
     /**
@@ -108,7 +108,7 @@ class RdvController extends Controller
 
     protected function checkDiponibility($request, $item){
         $periodOfRdv = [];
-        $rdvOfDate = Rendezvous::where('date', '=', $request['date'])->get();
+        $rdvOfDate = Rendezvous::where('date', '=', $request['date'])->where('etat_id', '!=', 5)->get();
         if ($rdvOfDate) {
             foreach ($rdvOfDate as $value) {
                 $array = [
@@ -132,7 +132,7 @@ class RdvController extends Controller
             $endRdv = $beginRdv->add($information['duration'], 'hour');
             array_push($hours, [
                 'beginRdv' => $information['hour'],
-                'endRdv' => $endRdv->hour.':'.'0'.$endRdv->minute.':'.'0'.$endRdv->second,
+                'endRdv' => $endRdv->hour.':'.$endRdv->minute.':'.$endRdv->second,
             ]);
         }
         return $hours;

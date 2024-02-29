@@ -54,7 +54,7 @@ class RendezvousController extends Controller
 
     protected function checkDiponibility($request){
         $periodOfRdv = [];
-        $rdvOfDate = Rendezvous::where('date', '=', $request->validated('day'))->get();
+        $rdvOfDate = Rendezvous::where('date', '=', $request->validated('day'))->where('etat_id', '!=', 5)->get();
         
         if ($rdvOfDate) {
             foreach ($rdvOfDate as $value) {

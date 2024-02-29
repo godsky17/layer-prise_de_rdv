@@ -63,32 +63,58 @@
             </div>
 
             <!-- BEGIN: Registration Form -->
-            <form class="space-y-4" action='#'>
+            <form class="space-y-4" action='{{route('admin.store')}}' method="POST">
+              @csrf
               <div class="fromGroup">
-                <label class="block capitalize form-label">Name</label>
+                <label class="block capitalize form-label">Nom</label>
                 <div class="relative ">
-                  <input type="text" name="name" class="  form-control py-2" placeholder="Enter your name">
+                  <input type="text" name="last_name" class="  form-control py-2" placeholder="Entrer votre nom">
                 </div>
+                @error('last_name')
+                    {{$message}}
+                @enderror
               </div>
+
+              <div class="fromGroup">
+                <label class="block capitalize form-label">Prenoms</label>
+                <div class="relative ">
+                  <input type="text" name="first_name" class="  form-control py-2" placeholder="Entrer votre prenom">
+                </div>
+                @error('first_name')
+                    {{$message}}
+                @enderror
+              </div>
+
               <div class="fromGroup">
                 <label class="block capitalize form-label">email</label>
                 <div class="relative ">
                   <input type="email" name="email" class="  form-control py-2" placeholder="Enter your email">
                 </div>
+                @error('email')
+                    {{$message}}
+                @enderror
               </div>
-              <div class="fromGroup       ">
-                <label class="block capitalize form-label  ">passwrod</label>
-                <div class="relative "><input type="password" name="password" class="  form-control py-2   " placeholder="Enter your password">
+              <div class="fromGroup">
+                <label class="block capitalize form-label">Telephone</label>
+                <div class="relative ">
+                  <input type="number" name="number" class="  form-control py-2" placeholder="Enter your number">
                 </div>
+                @error('number')
+                    {{$message}}
+                @enderror
               </div>
-              <div class="flex justify-between">
-                <label class="flex items-center cursor-pointer">
-                  <input type="checkbox" class="hiddens">
-                  <span class="text-slate-500 dark:text-slate-400 text-sm leading-6 capitalize">You accept our Terms and Conditions and
-                Privacy Policy</span>
-                </label>
+              <div class="fromGroup">
+                <label class="block capitalize form-label">Role</label>
+                <select name="role_id" id="basicSelect" class="form-control w-full mt-2">
+                  <option selected="Selected" disabled="disabled" value="none" class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">Select an option</option>
+                  <option value="1" class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">Super-admin</option>
+                  <option value="2" class="py-1 inline-block font-Inter font-normal text-sm text-slate-600">Admin</option>
+                </select>
+                @error('role_id')
+                    {{$message}}
+                @enderror
               </div>
-              <button class="btn btn-dark block w-full text-center">Create an account</button>
+              <button class="btn btn-dark block w-full text-center" type="submit">Creer un compte</button>
             </form>
             <!-- END: Registration Form -->
             <div class="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">

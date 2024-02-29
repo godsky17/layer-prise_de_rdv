@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\RdvController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RendezvousController;
@@ -50,6 +51,13 @@ Route::prefix('administration')->name('admin.')->middleware(['auth'])->group(fun
     Route::get('/calendrier', function(){
         return view('admin.calendrier');
     })->name('calendrier');
+
+    Route::get('/Liste des administrateurs', [AdminController::class, "index"])->name('gestion');
+    Route::post('/modificaions-admin', [AdminController::class, "updateAdmin"])->name('update.admin');
+    Route::post('/modificaions-sadmin', [AdminController::class, "updateSadmin"])->name('update.sadmin');
+    Route::get('/retirer', [AdminController::class, "retier"])->name('retirer');
+    Route::get('/creer un admin', [AdminController::class, "create"])->name('create');
+    Route::post('/creer un admin', [AdminController::class, "store"])->name('store');
 });
 
 

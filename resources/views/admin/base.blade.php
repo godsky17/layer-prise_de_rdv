@@ -65,6 +65,26 @@
               </span>
             </a>
           </li>
+          <li>
+            <a href="{{route("admin.gestion")}}" class="navItem">
+              <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="heroicons-outline:chat"></iconify-icon>
+            <span>Admin</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <form action="{{ route('auth.logout') }}" method="post" class="ml-2 mt-2">
+              @method("delete")
+              @csrf
+              <button type="submit" class="navItem">
+                <span class="flex items-center">
+                <iconify-icon class="nav-icon" icon="heroicons-outline:chat"></iconify-icon>
+                <span>Deconnection</span>
+                </span>
+              </button>
+            </form>
+          </li>
         </ul>
       </div>
     </div>
