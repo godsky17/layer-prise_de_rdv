@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\RdvController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RendezvousController;
 use App\Models\Etat;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,11 @@ Route::get('/rendez-vous', function () {return view('visiteur.form');})->name('g
 
 Route::post('/rendez-vous', [RendezvousController::class, 'store'])->name('saveRdv');
 
-Route::prefix('administration')->name('admin.')->group(function () {
+Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('/login', [AuthController::class, 'doLogin'])->name('auth.doLogin');
+Route::delete('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+Route::prefix('administration')->name('admin.')->middleware(['auth'])->group(function () {
     Route::get('/', function(){
         return view('admin.index');
     })->name('index');
@@ -45,24 +50,6 @@ Route::prefix('administration')->name('admin.')->group(function () {
     Route::get('/calendrier', function(){
         return view('admin.calendrier');
     })->name('calendrier');
-});
-
-Route::get('/brouillon', function(){
-    $nowBegin =  new Carbon('08:00');
-    $nowEnd =  new Carbon('12:0');
-    $existBegin =  new Carbon('12:00');
-    $existEnd = new Carbon('18:00');
-
-    $condition1 = ($nowBegin >= $existBegin) && ($nowBegin >= $existEnd) && ($nowEnd >= $existBegin ) && ($nowEnd >= $existBegin);
-    $condition2 = ($nowBegin <= $existBegin) && ($nowBegin <= $existEnd) && ($nowEnd <= $existBegin ) && ($nowEnd <= $existBegin);
-
-    if ($condition1 || $condition2) {
-        dd('true');
-    } else {
-        dd('false');
-    }
-    
-
 });
 
 
